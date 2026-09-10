@@ -51,7 +51,7 @@ tests/
 
 conftest.py      # markers, storageState auth reuse, tracing/screenshot-
                  # on-failure -- this file is what turns "a folder of
-                 # scripts" into a framework; read it first
+                 # scripts" into a framework;
 ```
 
 ### Config-driven environments
@@ -76,9 +76,9 @@ deployment.
 session**, saves Playwright's `storageState` to disk, and every test that
 needs a logged-in session uses the `authenticated_page` fixture instead of
 running the login flow itself. This is the single highest-leverage
-perf/flake fix available in UI automation — login is usually the least
+perf/flake fix available in UI automation - login is usually the least
 stable, slowest part of a test, and re-running it in every test multiplies
-both problems by your test count.
+both problems by test count.
 
 ### Data-driven tests
 
@@ -113,7 +113,7 @@ it if the URL pattern stops matching after a site change.
 `tests/visual/` screenshots the login and inventory pages and diffs them
 against `tests/visual/baselines/*.png` with Pillow
 (`framework/utils/visual_compare.py`). First run with no baseline present
-records one and passes; commit that PNG. A real UI change means deleting
+records one and passes. A real UI change means deleting
 the stale baseline and re-recording deliberately, not silencing a real
 diff.
 
@@ -184,12 +184,12 @@ Built on `mcr.microsoft.com/playwright/python`, which ships all three
 browser engines and their OS dependencies preinstalled — building this on
 a bare `python:3.11` image means separately `apt install`-ing ~30 browser
 dependency packages by hand, which is the step most Docker+Playwright
-write-ups skip and then their instructions don't actually work.
+write-ups skip.
 
 ## Adding a new test
 
 1. **New page under test?** Add a page object in `framework/pages/`
-   inheriting `BasePage`; expose locators in `__init__`, actions as
+   inheriting `BasePage`, expose locators in `__init__`, actions as
    methods that return `self` where it reads naturally as a chain.
 2. **New test data?** Add a case to the relevant JSON file in
    `tests/data/`, not inline in the test function.
@@ -204,7 +204,7 @@ write-ups skip and then their instructions don't actually work.
 - Visual baselines are Chromium-only (see CI section above).
 - The API suite targets reqres.in's public free tier, which is rate-limited
   and occasionally returns `403` under heavy anonymous traffic — this is a
-  target-side constraint, not a framework defect; `API_KEY` in `.env.dev`
+  target-side constraint, not a framework defect. `API_KEY` in `.env.dev`
   uses the documented free-tier key.
 - No parallel cross-target run (UI + API) is wired into one CI job by
   design — they're kept as separate marker-selectable suites so either can
