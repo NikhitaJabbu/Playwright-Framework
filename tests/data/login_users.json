@@ -1,0 +1,20 @@
+[
+  {
+    "case": "locked_out_user",
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "expected_error": "Sorry, this user has been locked out."
+  },
+  {
+    "case": "wrong_password",
+    "username": "standard_user",
+    "password": "wrong_password",
+    "expected_error": "Username and password do not match"
+  },
+  {
+    "case": "blank_username",
+    "username": "",
+    "password": "secret_sauce",
+    "expected_error": "Username is required"
+  }
+]

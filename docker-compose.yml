@@ -1,0 +1,11 @@
+services:
+  tests:
+    build: .
+    environment:
+      ENV: ${ENV:-dev}
+      HEADLESS: "true"
+    volumes:
+      # mount test-results out so failure artifacts (traces, screenshots,
+      # visual diffs) land on the host instead of vanishing with the container
+      - ./test-results:/app/test-results
+    command: pytest -m "smoke or regression or api or visual" -v

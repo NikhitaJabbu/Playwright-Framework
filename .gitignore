@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Playwright / test artifacts
+test-results/
+.auth/
+playwright-report/
+
+# Env files with real secrets (the .env.dev / .env.staging committed here
+# only contain public demo credentials -- a real project would gitignore
+# ALL .env* files and ship a .env.example instead)
+.env
+.env.local
+
+# OS
+.DS_Store

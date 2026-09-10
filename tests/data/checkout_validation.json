@@ -1,0 +1,23 @@
+[
+  {
+    "case": "missing_first_name",
+    "first": "",
+    "last": "Jabbu",
+    "postal": "62025",
+    "expected_error": "First Name is required"
+  },
+  {
+    "case": "missing_last_name",
+    "first": "Nikky",
+    "last": "",
+    "postal": "62025",
+    "expected_error": "Last Name is required"
+  },
+  {
+    "case": "missing_postal_code",
+    "first": "Nikky",
+    "last": "Jabbu",
+    "postal": "",
+    "expected_error": "Postal Code is required"
+  }
+]

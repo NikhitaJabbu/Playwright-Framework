@@ -1,0 +1,10 @@
+.git
+.pytest_cache
+test-results
+.auth
+__pycache__
+*.pyc
+.env
+.env.*
+!.env.dev
+!.env.staging

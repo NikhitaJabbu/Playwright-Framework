@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # nightly regression run, independent of any push -- catches drift in
+    # the target sites themselves, not just in this repo
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      test_marker:
+        description: "pytest -m marker to run (smoke, regression, api, visual)"
+        required: false
+        default: ""
+
+jobs:
+  test:
+    name: test (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install Playwright browser (${{ matrix.browser }})
+        run: python -m playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run test suite
+        env:
+          ENV: dev
+          HEADLESS: "true"
+        run: |
+          MARKER="${{ github.event.inputs.test_marker }}"
+          if [ -z "$MARKER" ]; then
+            MARKER="smoke or regression or api or visual"
+          fi
+          python -m pytest \
+            --browser ${{ matrix.browser }} \
+            -m "$MARKER" \
+            --reruns 2 --reruns-delay 3 \
+            --junitxml=test-results/junit-${{ matrix.browser }}.xml \
+            -v
+
+      # Only chromium collects visual baselines/diffs -- rendering differs
+      # per-engine, so cross-browser visual comparison needs per-browser
+      # baselines, which this framework doesn't attempt (out of scope for
+      # a portfolio project; noted as a known limitation in the README).
+      - name: Upload failure artifacts (traces, screenshots, visual diffs)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-artifacts-${{ matrix.browser }}
+          path: |
+            test-results/artifacts/**
+            test-results/visual-diffs/**
+          retention-days: 14
+
+      - name: Upload JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.browser }}
+          path: test-results/junit-${{ matrix.browser }}.xml
+          retention-days: 14
+
+  docker:
+    name: docker build sanity check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t playwright-framework:ci .
+      - name: Run smoke suite in container
+        run: |
+          docker run --rm \
+            -e ENV=dev -e HEADLESS=true \
+            playwright-framework:ci \
+            pytest -m smoke -v
