@@ -39,10 +39,13 @@ def test_product_images_fail_gracefully_when_asset_requests_error(page):
         intercepted_urls.append(route.request.url)
         route.fulfill(status=404, body="")
 
-    page.route("**/*.jpg", fail_image)
-    page.reload()
+    # Register the route on a fresh page in the same logged-in context and
+    # navigate there, instead of reloading. A reload can serve the images
+    # from the browser's memory cache, so the route might never fire.
+    fresh_page = page.context.new_page()
+    fresh_page.route("**/*.jpg", fail_image)
+    inventory = InventoryPage(fresh_page).goto()
 
-    inventory = InventoryPage(page)
     assert inventory.item_count() == baseline_count
     assert len(intercepted_urls) > 0, "expected image requests to be intercepted"
 
