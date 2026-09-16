@@ -1,9 +1,6 @@
 # Playwright Test Framework
 
-[![CI](https://github.com/NikhitaJabbu/playwright-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/NikhitaJabbu/playwright-framework/actions/workflows/ci.yml)
-
-> Badge above assumes this repo is pushed to `NikhitaJabbu/playwright-framework`.
-> Update the path once you pick a real repo name — it won't render until then.
+[![CI](https://github.com/NikhitaJabbu/Playwright-Framework/actions/workflows/ci.yml/badge.svg)](https://github.com/NikhitaJabbu/Playwright-Framework/actions/workflows/ci.yml)
 
 A Python + Playwright automation framework, exercised against two unrelated
 public targets (a UI demo app and a public REST API) to prove the
